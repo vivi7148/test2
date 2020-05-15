@@ -1,5 +1,6 @@
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   "name": "mylibraryapp",
   "version": "1.0.0",
   "description": "Library App project for workshops in INFO30005",
@@ -17,6 +18,8 @@
     "express": "^4.17.1",
     "mongoose": "^5.9.9"
 =======
+=======
+>>>>>>> parent of d310b62... Add files via upload
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
@@ -53,6 +56,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+<<<<<<< HEAD
+>>>>>>> parent of d310b62... Add files via upload
+=======
 >>>>>>> parent of d310b62... Add files via upload
   }
 }

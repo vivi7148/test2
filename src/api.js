@@ -1,79 +1,111 @@
-
+import { useState, useEffect } from "react";
 
 const BASE_URL = "http://localhost:3000";
 
-// using axios to interact with Library API
-const axios = require('axios');
-
-
-
-/**
- * Retrieves the list of authors from Library API
- * @return List of Objects, each containing author data.
- */
-export function getAuthors() {
-    const endpoint = BASE_URL + `/author-management`;
-    console.log("getAuthors");
-    try{
-        return axios.get(endpoint).then(res => res.data);
-    } catch (e) {
-        return e;
-    }
-
+function getAuthors() {
+  const endpoint = BASE_URL + `/author-management`;
+  console.log("getAuthors");
+  return fetch(endpoint).then(res => res.json());
 }
 
-/**
- * Retrieves a single author from Library API using the author ID
- * @param {string} author_id -- uniquely identifies each author
- * @return Single Objects containing author data.
- */
-export function  getAuthor(id) {
-    const endpoint = BASE_URL + `/author-management/${id}`;
-
-    try{
-        return axios.get(endpoint).then(res => res.data);
-    } catch (e) {
-        return e;
-
-    }
+export function getAuthor(id) {
+  const endpoint = BASE_URL + `/author-management/${id}`;
+  console.log("getAuthor");
+  return fetch(endpoint).then(res => {
+    console.log(res);
+  });
 }
 
-/**
- * Updates the details of an author; changes only the first and last name
- * @param {object} author {id, first_name, last_name}
- */
+export function addAuthor(author) {
+  const { id, first_name, last_name } = author;
+  if (!id || !first_name || !last_name) {
+    alert("must include all fields");
+    return;
+  }
+
+  console.log({
+    first_name,
+    last_name
+  });
+  const endpoint = BASE_URL + `/author-management/`;
+  console.log("addAuthor");
+  // console.log(author);
+  return fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      id,
+      first_name,
+      last_name
+    })
+  }).then(res => window.location.reload());
+}
+
 export function updateAuthor(author) {
-    const { id, first_name, last_name } = author;
-    const endpoint = BASE_URL + `/author-management/${id}`;
-    // check the author id is present
-    if (!id) {
-        alert("must include an id");
-        return;
-    }
-    // check that both contain some text
-    if (!first_name || !last_name) {
-        alert("must include a first name or last name to update");
-        return;
-    }
+  const { id, first_name, last_name } = author;
+  if (!id) {
+    alert("must include an id");
+    return;
+  }
+  if (!first_name || !last_name) {
+    alert("must include a first name or last name to update");
+    return;
+  }
 
-    console.log({
-        first_name,
-        last_name
-    });
+  console.log({
+    first_name,
+    last_name
+  });
+  const endpoint = BASE_URL + `/author-management/${id}`;
+  console.log("updateAuthor");
+  // console.log(author);
+  return fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      first_name,
+      last_name
+    })
+  })
+    .then(res => {
+      console.log(res);
+    })
+    .then(res => window.location.reload());
+}
 
+export function deleteAuthor(id) {
+  const endpoint = BASE_URL + `/author-management/${id}`;
+  console.log("deleteAuthor");
+  return fetch(endpoint, {
+    method: "DELETE"
+  }).then(res => window.location.reload());
+}
 
-    console.log("updateAuthor");
+export function useAuthors() {
+  const [loading, setLoading] = useState(true);
+  const [authors, setAuthors] = useState([]);
+  const [error, setError] = useState(null);
 
-    return axios({
-            url: endpoint,  // send a request to the library API
-            method: "POST", // HTTP POST method
-            headers: {
-                "Content-Type": "application/json"
-            },
-            data: JSON.stringify({ // payload -- values to change
-                first_name,
-                last_name
-            })
-        })
+  useEffect(() => {
+    getAuthors()
+      .then(authors => {
+        setAuthors(authors);
+        setLoading(false);
+      })
+      .catch(e => {
+        console.log(e);
+        setError(e);
+        setLoading(false);
+      });
+  }, []);
 
+  return {
+    loading,
+    authors,
+    error
+  };
 }
